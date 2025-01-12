@@ -8,12 +8,11 @@ class EmployeeFilter extends React.Component {
 
 function EmployeeTable(props) {
     const employeeRows = props.employees.map(employee => 
-        <EmployeeRow key={employee.id} employee={employee}/>)
+        <EmployeeRow key={employee._id} employee={employee}/>)
     return (
         <table className="bordered-table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Extension</th>
                     <th>Email</th>
@@ -33,13 +32,12 @@ function EmployeeRow(props) {
     const employee = props.employee
     return (
         <tr>
-            <td>{employee.id}</td>
             <td>{employee.name}</td>
-            <td>{employee.ext}</td>
+            <td>{employee.extension}</td>
             <td>{employee.email}</td>
             <td>{employee.title}</td>
             <td>{employee.dateHired.toDateString()}</td>
-            <td>{employee.isEmployed ? 'Yes' : 'No'}</td>
+            <td>{employee.currentlyEmployed ? 'Yes' : 'No'}</td>
         </tr>
     )
 }

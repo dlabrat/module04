@@ -1,20 +1,3 @@
-const initialEmployees = [{
-  id: 1,
-  name: 'Zak Ruvalcaba',
-  ext: 1124,
-  email: 'zak@vectacorp.com',
-  title: 'Chief Executive Officer',
-  dateHired: new Date('2018-08-15'),
-  isEmployed: true
-}, {
-  id: 2,
-  name: 'Sally Smith',
-  ext: 1125,
-  email: 'sally@vectacorp.com',
-  title: 'Director of Sales',
-  dateHired: new Date('2015-01-03'),
-  isEmployed: true
-}];
 class EmployeeFilter extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement("div", null, "This is a placeholder for the employee filter.");
@@ -22,16 +5,16 @@ class EmployeeFilter extends React.Component {
 }
 function EmployeeTable(props) {
   const employeeRows = props.employees.map(employee => /*#__PURE__*/React.createElement(EmployeeRow, {
-    key: employee.id,
+    key: employee._id,
     employee: employee
   }));
   return /*#__PURE__*/React.createElement("table", {
     className: "bordered-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "ID"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Extension"), /*#__PURE__*/React.createElement("th", null, "Email"), /*#__PURE__*/React.createElement("th", null, "Title"), /*#__PURE__*/React.createElement("th", null, "Date Hired"), /*#__PURE__*/React.createElement("th", null, "Currently Employed?"))), /*#__PURE__*/React.createElement("tbody", null, employeeRows));
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Extension"), /*#__PURE__*/React.createElement("th", null, "Email"), /*#__PURE__*/React.createElement("th", null, "Title"), /*#__PURE__*/React.createElement("th", null, "Date Hired"), /*#__PURE__*/React.createElement("th", null, "Currently Employed?"))), /*#__PURE__*/React.createElement("tbody", null, employeeRows));
 }
 function EmployeeRow(props) {
   const employee = props.employee;
-  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, employee.id), /*#__PURE__*/React.createElement("td", null, employee.name), /*#__PURE__*/React.createElement("td", null, employee.ext), /*#__PURE__*/React.createElement("td", null, employee.email), /*#__PURE__*/React.createElement("td", null, employee.title), /*#__PURE__*/React.createElement("td", null, employee.dateHired.toDateString()), /*#__PURE__*/React.createElement("td", null, employee.isEmployed ? 'Yes' : 'No'));
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, employee.name), /*#__PURE__*/React.createElement("td", null, employee.extension), /*#__PURE__*/React.createElement("td", null, employee.email), /*#__PURE__*/React.createElement("td", null, employee.title), /*#__PURE__*/React.createElement("td", null, employee.dateHired.toDateString()), /*#__PURE__*/React.createElement("td", null, employee.currentlyEmployed ? 'Yes' : 'No'));
 }
 class EmployeeAdd extends React.Component {
   constructor() {
@@ -86,11 +69,17 @@ class EmployeeList extends React.Component {
     this.loadData();
   }
   loadData() {
-    setTimeout(() => {
-      this.setState({
-        employees: initialEmployees
+    fetch('/api/employees').then(response => response.json()).then(data => {
+      console.log('Total count of employees: ', data.count);
+      data.employee.forEach(employee => {
+        employee.dataHired = new Date(employee.dateHired);
       });
-    }, 500);
+      this.setState({
+        employees: data.employees
+      });
+    }).catch(err => {
+      console.log(err);
+    });
   }
   createEmployee(employee) {
     employee.id = this.state.employees.length + 1;
