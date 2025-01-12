@@ -1,23 +1,4 @@
-const initialEmployees = [
-    {
-        id: 1,
-        name: 'Zak Ruvalcaba',
-        ext: 1124,
-        email: 'zak@vectacorp.com',
-        title: 'Chief Executive Officer',
-        dateHired: new Date('2018-08-15'),
-        isEmployed: true,
-    },
-    {
-        id: 2,
-        name: 'Sally Smith',
-        ext: 1125,
-        email: 'sally@vectacorp.com',
-        title: 'Director of Sales',
-        dateHired: new Date('2015-01-03'),
-        isEmployed: true,
-    },
-]
+
 
 class EmployeeFilter extends React.Component {
     render() {
@@ -108,9 +89,16 @@ class EmployeeList extends React.Component {
         this.loadData()
     }
     loadData() {
-        setTimeout(() => {
-            this.setState({ employees: initialEmployees })
-        }, 500)
+       fetch('/api/employees')
+       .then(response => response.json())
+       .then(data=> { 
+            console.log('Total count of employees: ', data.count)
+            data.employee.forEach(employee => {
+                employee.dataHired = new Date(employee.dateHired)           
+         })
+         this.setState({employees: data.employees})
+       })
+       .catch(err => {console.log(err)})
     }
     createEmployee(employee) {
         employee.id = this.state.employees.length + 1
